@@ -1,0 +1,13 @@
+{
+  "name": "farming-tunisia-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -k -n backend,desktop -c green,blue \"pnpm --dir backend dev\" \"pnpm --dir desktop-client dev\"",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "install:all": "pnpm install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
