@@ -16,6 +16,7 @@ import {
   ThemeIcon
 } from '@mantine/core';
 import {
+  IconArrowRight,
   IconArrowUpRight,
   IconCalendarEvent,
   IconChecklist,
@@ -32,8 +33,10 @@ import {
 } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import type { DashboardSummary } from '../../../shared/contracts';
 import farmHero from '../assets/farm-hero-banner.png';
+import { FarmMapSimulation } from '../components/farm-map-simulation';
 import { PageHeader } from '../components/page-header';
 import { StatCard } from '../components/stat-card';
 import { apiFetch } from '../lib/api';
@@ -41,6 +44,7 @@ import { formatCompactNumber, formatCurrency, formatMonthLabel } from '../lib/fo
 
 export const DashboardPage = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
   const { data, isLoading } = useQuery({
     queryKey: ['dashboard-summary'],
     queryFn: () => apiFetch<DashboardSummary>('/api/dashboard/summary')
@@ -54,8 +58,8 @@ export const DashboardPage = () => {
             width: 60,
             height: 60,
             borderRadius: '50%',
-            border: '3px solid rgba(76, 175, 80, 0.1)',
-            borderTopColor: '#4caf50',
+            border: '3px solid rgba(79, 139, 76, 0.15)',
+            borderTopColor: '#4f8b4c',
             animation: 'spin 1s linear infinite'
           }}
         />
@@ -75,11 +79,6 @@ export const DashboardPage = () => {
     type: t(`livestockType.${entry.type}`),
     total: entry.count
   }));
-  const taskChartData = data.taskStatusSummary.map((entry, index) => ({
-    name: t(`taskStatus.${entry.status}`),
-    value: entry.count,
-    color: ['ferma.5', 'gold.5', 'gray.6'][index % 3]
-  }));
   const categoryChartData = data.operationsByCategory.slice(0, 6).map((entry) => ({
     category: t(`operationCategory.${entry.category}`),
     total: entry.total
@@ -97,63 +96,34 @@ export const DashboardPage = () => {
         badge="Ferma-TN"
       />
 
-      {/* ── Hero Banner ─────────────────────────────────── */}
       <Card className="dashboard-hero" padding="xl" radius="xl" withBorder>
         <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="xl">
           <Stack gap="lg" style={{ position: 'relative', zIndex: 1 }}>
             <div>
               <Group gap="sm" mb="md">
-                <Badge
-                  color="ferma"
-                  variant="light"
-                  size="lg"
-                  style={{
-                    background: 'rgba(76, 175, 80, 0.12)',
-                    border: '1px solid rgba(76, 175, 80, 0.2)'
-                  }}
-                  leftSection={<IconLeaf size={14} />}
-                >
+                <Badge color="ferma" variant="light" size="lg" leftSection={<IconLeaf size={14} />} className="title-badge">
                   Ferma-TN
                 </Badge>
-                <Badge
-                  color="gold"
-                  variant="light"
-                  size="lg"
-                  style={{
-                    background: 'rgba(255, 193, 7, 0.1)',
-                    border: '1px solid rgba(255, 193, 7, 0.2)'
-                  }}
-                  leftSection={<IconMapPin size={14} />}
-                >
+                <Badge color="gold" variant="light" size="lg" leftSection={<IconMapPin size={14} />}>
                   Tunisia
                 </Badge>
               </Group>
 
-              <Text
-                fw={800}
-                style={{
-                  fontSize: '2rem',
-                  lineHeight: 1.2,
-                  background: 'linear-gradient(135deg, #e8f5e9 20%, #81c784 60%, #ffd54f 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  maxWidth: 520
-                }}
-              >
+              <Text fw={800} style={{ fontSize: '2.1rem', lineHeight: 1.12 }} className="page-title-gradient">
                 {t('dashboard.heroTitle')}
               </Text>
-              <Text mt="md" maw={560} size="md" style={{ color: 'rgba(200,230,201,0.6)', lineHeight: 1.7 }}>
+              <Text mt="md" maw={580} size="md" className="hero-description" lineClamp={3} style={{ lineHeight: 1.75 }}>
                 {t('dashboard.heroDescription')}
               </Text>
             </div>
 
-            <Group gap="sm">
+            <Group gap="sm" wrap="wrap">
               <Button
                 color="ferma"
                 radius="xl"
                 size="md"
                 leftSection={<IconLeaf size={16} />}
-                style={{ boxShadow: '0 4px 20px rgba(76, 175, 80, 0.25)' }}
+                style={{ boxShadow: '0 4px 18px rgba(79, 139, 76, 0.2)' }}
               >
                 {formatCompactNumber(data.livestockCount, locale)} {t('dashboard.livestockCount')}
               </Button>
@@ -162,10 +132,10 @@ export const DashboardPage = () => {
                 radius="xl"
                 size="md"
                 leftSection={<IconCoins size={16} />}
+                className={netIsPositive ? 'metric-positive' : 'metric-negative'}
                 style={{
-                  background: netIsPositive ? 'rgba(76, 175, 80, 0.1)' : 'rgba(239, 83, 80, 0.1)',
-                  border: `1px solid ${netIsPositive ? 'rgba(76, 175, 80, 0.2)' : 'rgba(239, 83, 80, 0.2)'}`,
-                  color: netIsPositive ? '#66bb6a' : '#ef5350'
+                  background: netIsPositive ? 'rgba(79, 139, 76, 0.1)' : 'rgba(212, 91, 67, 0.1)',
+                  border: `1px solid ${netIsPositive ? 'rgba(79, 139, 76, 0.22)' : 'rgba(212, 91, 67, 0.2)'}`
                 }}
               >
                 {formatCurrency(data.monthlyNet, locale)}
@@ -179,7 +149,7 @@ export const DashboardPage = () => {
                   <IconArrowUpRight size={14} />
                 </ThemeIcon>
               }
-              style={{ color: 'rgba(200,230,201,0.7)' }}
+              className="soft-text"
             >
               <List.Item>{t('dashboard.heroPointRevenue')}</List.Item>
               <List.Item>{t('dashboard.heroPointLivestock')}</List.Item>
@@ -193,8 +163,7 @@ export const DashboardPage = () => {
         </SimpleGrid>
       </Card>
 
-      {/* ── Stat Cards Row ──────────────────────────────── */}
-      <SimpleGrid cols={{ base: 1, sm: 2, lg: 3, xl: 5 }}>
+      <SimpleGrid cols={{ base: 1, sm: 2, lg: 3, xl: 5 }} spacing="lg">
         <div className="animate-in animate-in-delay-1">
           <StatCard
             label={t('dashboard.livestockCount')}
@@ -242,57 +211,71 @@ export const DashboardPage = () => {
         </div>
       </SimpleGrid>
 
-      {/* ── Quick Actions ───────────────────────────────── */}
-      <SimpleGrid cols={{ base: 2, md: 4 }}>
+      <SimpleGrid cols={{ base: 2, md: 4 }} spacing="lg">
         {[
-          { icon: IconLeaf, label: t('livestock.add'), color: '#4caf50' },
-          { icon: IconChecklist, label: t('tasks.add'), color: '#8bc34a' },
-          { icon: IconTractor, label: t('operations.add'), color: '#ffc107' },
-          { icon: IconCalendarEvent, label: t('dashboard.upcomingTasks'), color: '#009688' }
-        ].map((action, index) => (
+          { icon: IconLeaf, label: t('livestock.add'), color: '#4f8b4c', to: '/livestock' },
+          { icon: IconChecklist, label: t('tasks.add'), color: '#7b9e43', to: '/tasks' },
+          { icon: IconTractor, label: t('operations.add'), color: '#c9902f', to: '/operations' },
+          { icon: IconCalendarEvent, label: t('dashboard.upcomingTasks'), color: '#2f8b79', to: '/tasks' }
+        ].map((action) => (
           <Paper
-            key={index}
+            key={action.label}
             className="quick-action-btn"
             p="md"
             radius="xl"
+            role="button"
+            tabIndex={0}
+            onClick={() => navigate(action.to)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                navigate(action.to);
+              }
+            }}
             style={{ cursor: 'pointer' }}
           >
-            <Group gap="sm" justify="center">
+            <Group gap="sm" justify="space-between" wrap="nowrap">
+              <Group gap="sm" wrap="nowrap">
+                <ThemeIcon
+                  size={36}
+                  radius="xl"
+                  variant="light"
+                  style={{
+                    background: `${action.color}18`,
+                    border: `1px solid ${action.color}30`,
+                    color: action.color
+                  }}
+                >
+                  <action.icon size={18} />
+                </ThemeIcon>
+                <Text size="sm" fw={600} className="section-heading quick-action-label">
+                  {action.label}
+                </Text>
+              </Group>
               <ThemeIcon
-                size={36}
+                size={30}
                 radius="xl"
                 variant="light"
                 style={{
-                  background: `${action.color}18`,
-                  border: `1px solid ${action.color}30`,
-                  color: action.color
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid var(--app-border)',
+                  color: 'var(--app-text-secondary)'
                 }}
               >
-                <action.icon size={18} />
+                <IconArrowRight size={16} />
               </ThemeIcon>
-              <Text size="sm" fw={600} style={{ color: 'rgba(200,230,201,0.8)' }}>
-                {action.label}
-              </Text>
             </Group>
           </Paper>
         ))}
       </SimpleGrid>
 
-      {/* ── Charts Row 1 ────────────────────────────────── */}
-      <SimpleGrid cols={{ base: 1, xl: 3 }}>
-        {/* Finance Trend */}
+      <SimpleGrid cols={{ base: 1, xl: 3 }} spacing="lg">
         <Card className="chart-card" padding="lg" radius="xl" withBorder>
           <div className="chart-card-header">
-            <Box
-              className="chart-icon"
-              style={{
-                background: 'rgba(76, 175, 80, 0.1)',
-                border: '1px solid rgba(76, 175, 80, 0.2)'
-              }}
-            >
-              <IconTrendingUp size={18} color="#66bb6a" />
+            <Box className="chart-icon ferma">
+              <IconTrendingUp size={18} color="#4f8b4c" />
             </Box>
-            <Text fw={700} c="#e8f5e9">{t('dashboard.financeTrend')}</Text>
+            <Text fw={700} className="section-heading">{t('dashboard.financeTrend')}</Text>
           </div>
           <AreaChart
             h={260}
@@ -308,19 +291,12 @@ export const DashboardPage = () => {
           />
         </Card>
 
-        {/* Herd Distribution */}
         <Card className="chart-card" padding="lg" radius="xl" withBorder>
           <div className="chart-card-header">
-            <Box
-              className="chart-icon"
-              style={{
-                background: 'rgba(139, 195, 74, 0.1)',
-                border: '1px solid rgba(139, 195, 74, 0.2)'
-              }}
-            >
-              <IconPlant2 size={18} color="#aed581" />
+            <Box className="chart-icon ferma">
+              <IconPlant2 size={18} color="#7b9e43" />
             </Box>
-            <Text fw={700} c="#e8f5e9">{t('dashboard.herdBalance')}</Text>
+            <Text fw={700} className="section-heading">{t('dashboard.herdBalance')}</Text>
           </div>
           <BarChart
             h={260}
@@ -332,19 +308,12 @@ export const DashboardPage = () => {
           />
         </Card>
 
-        {/* Task Status */}
         <Card className="chart-card" padding="lg" radius="xl" withBorder>
           <div className="chart-card-header">
-            <Box
-              className="chart-icon"
-              style={{
-                background: 'rgba(255, 193, 7, 0.1)',
-                border: '1px solid rgba(255, 193, 7, 0.2)'
-              }}
-            >
-              <IconClipboardCheck size={18} color="#ffd54f" />
+            <Box className="chart-icon gold">
+              <IconClipboardCheck size={18} color="#c9902f" />
             </Box>
-            <Text fw={700} c="#e8f5e9">{t('dashboard.taskStatusSummary')}</Text>
+            <Text fw={700} className="section-heading">{t('dashboard.taskStatusSummary')}</Text>
           </div>
 
           <Group justify="center" mt="md">
@@ -353,12 +322,12 @@ export const DashboardPage = () => {
               thickness={16}
               roundCaps
               sections={[
-                { value: completionRate, color: '#4caf50' },
-                { value: 100 - completionRate, color: 'rgba(76, 175, 80, 0.1)' }
+                { value: completionRate, color: '#4f8b4c' },
+                { value: 100 - completionRate, color: 'rgba(79, 139, 76, 0.14)' }
               ]}
               label={
                 <Stack align="center" gap={0}>
-                  <Text fw={800} size="xl" c="#e8f5e9">{completionRate}%</Text>
+                  <Text fw={800} size="xl" className="section-heading">{completionRate}%</Text>
                   <Text size="xs" c="dimmed">{t('taskStatus.done')}</Text>
                 </Stack>
               }
@@ -368,14 +337,14 @@ export const DashboardPage = () => {
           <SimpleGrid cols={3} mt="lg">
             {data.taskStatusSummary.map((entry, index) => (
               <Stack key={entry.status} align="center" gap={4}>
-                <Text fw={700} size="lg" c="#e8f5e9">{entry.count}</Text>
+                <Text fw={700} size="lg" className="section-heading">{entry.count}</Text>
                 <Text size="xs" c="dimmed">{t(`taskStatus.${entry.status}`)}</Text>
                 <Box
                   h={3}
                   w="100%"
                   style={{
                     borderRadius: 2,
-                    background: ['#4caf50', '#ffc107', '#78909c'][index % 3]
+                    background: ['#4f8b4c', '#c9902f', '#7a8e88'][index % 3]
                   }}
                 />
               </Stack>
@@ -384,21 +353,13 @@ export const DashboardPage = () => {
         </Card>
       </SimpleGrid>
 
-      {/* ── Charts Row 2 ────────────────────────────────── */}
-      <SimpleGrid cols={{ base: 1, xl: 2 }}>
-        {/* Operations by Category */}
+      <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="lg">
         <Card className="chart-card" padding="lg" radius="xl" withBorder>
           <div className="chart-card-header">
-            <Box
-              className="chart-icon"
-              style={{
-                background: 'rgba(0, 150, 136, 0.1)',
-                border: '1px solid rgba(0, 150, 136, 0.2)'
-              }}
-            >
-              <IconTractor size={18} color="#4db6ac" />
+            <Box className="chart-icon teal">
+              <IconTractor size={18} color="#2f8b79" />
             </Box>
-            <Text fw={700} c="#e8f5e9">{t('dashboard.operationsByCategory')}</Text>
+            <Text fw={700} className="section-heading">{t('dashboard.operationsByCategory')}</Text>
           </div>
           <BarChart
             h={260}
@@ -409,20 +370,13 @@ export const DashboardPage = () => {
           />
         </Card>
 
-        {/* Upcoming Tasks */}
         <Card className="chart-card" padding="lg" radius="xl" withBorder>
           <Group justify="space-between" mb="lg">
             <div className="chart-card-header" style={{ marginBottom: 0 }}>
-              <Box
-                className="chart-icon"
-                style={{
-                  background: 'rgba(76, 175, 80, 0.1)',
-                  border: '1px solid rgba(76, 175, 80, 0.2)'
-                }}
-              >
-                <IconCalendarEvent size={18} color="#66bb6a" />
+              <Box className="chart-icon ferma">
+                <IconCalendarEvent size={18} color="#4f8b4c" />
               </Box>
-              <Text fw={700} c="#e8f5e9">{t('dashboard.upcomingTasks')}</Text>
+              <Text fw={700} className="section-heading">{t('dashboard.upcomingTasks')}</Text>
             </div>
             <Badge variant="light" color="ferma" size="sm">
               {data.upcomingTasks.length}
@@ -444,8 +398,8 @@ export const DashboardPage = () => {
                   p="sm"
                   radius="lg"
                   style={{
-                    background: 'rgba(76, 175, 80, 0.04)',
-                    border: '1px solid rgba(76, 175, 80, 0.08)',
+                    background: 'rgba(79, 139, 76, 0.06)',
+                    border: '1px solid rgba(79, 139, 76, 0.1)',
                     transition: 'all 0.2s ease'
                   }}
                 >
@@ -456,10 +410,10 @@ export const DashboardPage = () => {
                           width: 8,
                           height: 8,
                           borderRadius: '50%',
-                          background: task.priority === 'high' ? '#ef5350' : task.priority === 'medium' ? '#ffc107' : '#4caf50'
+                          background: task.priority === 'high' ? '#d45b43' : task.priority === 'medium' ? '#c9902f' : '#4f8b4c'
                         }}
                       />
-                      <Text size="sm" c="#e8f5e9" fw={500}>{task.title}</Text>
+                      <Text size="sm" fw={500} className="section-heading">{task.title}</Text>
                     </Group>
                     <Group gap="xs">
                       <Badge
@@ -469,11 +423,11 @@ export const DashboardPage = () => {
                       >
                         {t(`taskStatus.${task.status}`)}
                       </Badge>
-                      {task.dueDate && (
+                      {task.dueDate ? (
                         <Text size="xs" c="dimmed">
                           {new Date(task.dueDate).toLocaleDateString(locale)}
                         </Text>
-                      )}
+                      ) : null}
                     </Group>
                   </Group>
                 </Paper>
@@ -483,90 +437,89 @@ export const DashboardPage = () => {
         </Card>
       </SimpleGrid>
 
-      {/* ── Recent Operations ───────────────────────────── */}
+      <FarmMapSimulation />
+
       <Card className="chart-card" padding="lg" radius="xl" withBorder>
         <Group justify="space-between" mb="lg">
           <div className="chart-card-header" style={{ marginBottom: 0 }}>
-            <Box
-              className="chart-icon"
-              style={{
-                background: 'rgba(255, 193, 7, 0.1)',
-                border: '1px solid rgba(255, 193, 7, 0.2)'
-              }}
-            >
-              <IconCurrencyDollar size={18} color="#ffd54f" />
+            <Box className="chart-icon gold">
+              <IconCurrencyDollar size={18} color="#c9902f" />
             </Box>
-            <Text fw={700} c="#e8f5e9">{t('dashboard.recentOperations')}</Text>
+            <Text fw={700} className="section-heading">{t('dashboard.recentOperations')}</Text>
           </div>
           <Badge variant="light" color="gold" size="sm">
             {data.recentOperations.length}
           </Badge>
         </Group>
 
-        <Table highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>{t('operations.name')}</Table.Th>
-              <Table.Th>{t('operations.category')}</Table.Th>
-              <Table.Th>{t('operations.direction')}</Table.Th>
-              <Table.Th>{t('operations.date')}</Table.Th>
-              <Table.Th>{t('operations.amount')}</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {data.recentOperations.length === 0 ? (
-              <Table.Tr>
-                <Table.Td colSpan={5}>
-                  <Text c="dimmed" ta="center" py="md">{t('common.empty')}</Text>
-                </Table.Td>
-              </Table.Tr>
-            ) : (
-              data.recentOperations.map((operation) => (
-                <Table.Tr key={operation.id}>
-                  <Table.Td>
-                    <Text size="sm" fw={500}>{operation.name}</Text>
-                  </Table.Td>
-                  <Table.Td>
-                    <Badge variant="light" color="ferma" size="sm">
-                      {t(`operationCategory.${operation.category}`)}
-                    </Badge>
-                  </Table.Td>
-                  <Table.Td>
-                    <Badge
-                      variant="light"
-                      size="sm"
-                      color={operation.direction === 'income' ? 'ferma' : 'red'}
-                      style={{
-                        background: operation.direction === 'income'
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'rgba(239, 83, 80, 0.1)',
-                        border: `1px solid ${operation.direction === 'income'
-                          ? 'rgba(76, 175, 80, 0.2)'
-                          : 'rgba(239, 83, 80, 0.2)'}`,
-                      }}
-                    >
-                      {t(`financialDirection.${operation.direction}`)}
-                    </Badge>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text size="sm" c="dimmed">
-                      {new Date(operation.date).toLocaleDateString(locale)}
-                    </Text>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text
-                      size="sm"
-                      fw={600}
-                      c={operation.direction === 'income' ? '#66bb6a' : '#ef5350'}
-                    >
-                      {operation.direction === 'income' ? '+' : '-'}{formatCurrency(operation.amount ?? 0, locale)}
-                    </Text>
-                  </Table.Td>
+        <div className="table-shell">
+          <Table.ScrollContainer minWidth={760}>
+            <Table highlightOnHover>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>{t('operations.name')}</Table.Th>
+                  <Table.Th>{t('operations.category')}</Table.Th>
+                  <Table.Th>{t('operations.direction')}</Table.Th>
+                  <Table.Th>{t('operations.date')}</Table.Th>
+                  <Table.Th>{t('operations.amount')}</Table.Th>
                 </Table.Tr>
-              ))
-            )}
-          </Table.Tbody>
-        </Table>
+              </Table.Thead>
+              <Table.Tbody>
+                {data.recentOperations.length === 0 ? (
+                  <Table.Tr>
+                    <Table.Td colSpan={5}>
+                      <Text c="dimmed" ta="center" py="md">{t('common.empty')}</Text>
+                    </Table.Td>
+                  </Table.Tr>
+                ) : (
+                  data.recentOperations.map((operation) => (
+                    <Table.Tr key={operation.id}>
+                      <Table.Td>
+                        <Text size="sm" fw={500}>{operation.name}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge variant="light" color="ferma" size="sm">
+                          {t(`operationCategory.${operation.category}`)}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          variant="light"
+                          size="sm"
+                          color={operation.direction === 'income' ? 'ferma' : 'red'}
+                          style={{
+                            background: operation.direction === 'income'
+                              ? 'rgba(79, 139, 76, 0.1)'
+                              : 'rgba(212, 91, 67, 0.1)',
+                            border: `1px solid ${operation.direction === 'income'
+                              ? 'rgba(79, 139, 76, 0.2)'
+                              : 'rgba(212, 91, 67, 0.2)'}`
+                          }}
+                        >
+                          {t(`financialDirection.${operation.direction}`)}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" c="dimmed">
+                          {new Date(operation.date).toLocaleDateString(locale)}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text
+                          size="sm"
+                          fw={700}
+                          className={operation.direction === 'income' ? 'metric-positive' : 'metric-negative'}
+                        >
+                          {operation.direction === 'income' ? '+' : '-'}{formatCurrency(operation.amount ?? 0, locale)}
+                        </Text>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))
+                )}
+              </Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
+        </div>
       </Card>
     </Stack>
   );

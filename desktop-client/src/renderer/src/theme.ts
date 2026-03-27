@@ -2,10 +2,10 @@ import { createTheme } from '@mantine/core';
 
 export const appTheme = createTheme({
   primaryColor: 'ferma',
-  fontFamily: '"Cairo", sans-serif',
+  fontFamily: '"Cairo", "Segoe UI", sans-serif',
   defaultRadius: 'lg',
   headings: {
-    fontFamily: '"Cairo", sans-serif'
+    fontFamily: '"Cairo", "Segoe UI", sans-serif'
   },
   colors: {
     ferma: [
@@ -82,16 +82,6 @@ export const appTheme = createTheme({
     ]
   },
   other: {
-    background:
-      'linear-gradient(135deg, #0a1f14 0%, #0d2818 25%, #122d1c 50%, #0a2015 75%, #071a10 100%)',
-    shell:
-      'linear-gradient(180deg, rgba(15,40,25,0.98) 0%, rgba(10,32,20,0.96) 100%)',
-    cardBg: 'rgba(20, 50, 35, 0.65)',
-    cardBorder: 'rgba(76, 175, 80, 0.15)',
-    glowGreen: 'rgba(76, 175, 80, 0.25)',
-    glowGold: 'rgba(255, 193, 7, 0.15)',
-    textPrimary: '#e8f5e9',
-    textSecondary: 'rgba(200, 230, 201, 0.7)',
-    textMuted: 'rgba(165, 214, 167, 0.5)'
+    shellRadius: 28
   }
 });

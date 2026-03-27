@@ -120,11 +120,7 @@ export const OperationsPage = () => {
                 fw={800}
                 size="1.6rem"
                 mt={4}
-                style={{
-                  background: 'linear-gradient(135deg, #e8f5e9, #66bb6a)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
+                className="page-title-gradient"
               >
                 {formatCurrency(revenue, locale)}
               </Text>
@@ -151,11 +147,7 @@ export const OperationsPage = () => {
                 fw={800}
                 size="1.6rem"
                 mt={4}
-                style={{
-                  background: 'linear-gradient(135deg, #ffcdd2, #ef5350)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
+                className="page-title-gradient"
               >
                 {formatCurrency(expenses, locale)}
               </Text>
@@ -182,7 +174,7 @@ export const OperationsPage = () => {
                 fw={800}
                 size="1.6rem"
                 mt={4}
-                style={{ color: netResult >= 0 ? '#66bb6a' : '#ef5350' }}
+                className={netResult >= 0 ? 'metric-positive' : 'metric-negative'}
               >
                 {netResult >= 0 ? '+' : ''}{formatCurrency(netResult, locale)}
               </Text>
@@ -212,11 +204,7 @@ export const OperationsPage = () => {
                 fw={800}
                 size="1.6rem"
                 mt={4}
-                style={{
-                  background: 'linear-gradient(135deg, #e0f2f1, #4db6ac)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
+                className="page-title-gradient"
               >
                 {formatCompactNumber(operations.length, locale)}
               </Text>
@@ -252,99 +240,103 @@ export const OperationsPage = () => {
             >
               <IconTractor size={18} color="#ffd54f" />
             </Box>
-            <Text fw={700} c="#e8f5e9">{t('operations.title')}</Text>
+            <Text fw={700} className="section-heading">{t('operations.title')}</Text>
           </Group>
           <Badge variant="light" color="gold" size="sm">{operations.length}</Badge>
         </Group>
 
-        <Table highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>{t('operations.name')}</Table.Th>
-              <Table.Th>{t('operations.category')}</Table.Th>
-              <Table.Th>{t('operations.direction')}</Table.Th>
-              <Table.Th>{t('operations.date')}</Table.Th>
-              <Table.Th>{t('operations.amount')}</Table.Th>
-              <Table.Th>{t('operations.quantity')}</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {operations.length === 0 ? (
-              <Table.Tr>
-                <Table.Td colSpan={6}>
-                  <Stack align="center" py="xl" gap="sm">
-                    <ThemeIcon size={48} radius="xl" variant="light" color="gold">
-                      <IconTractor size={24} />
-                    </ThemeIcon>
-                    <Text c="dimmed" size="sm">{t('common.empty')}</Text>
-                  </Stack>
-                </Table.Td>
-              </Table.Tr>
-            ) : (
-              operations.map((operation) => (
-                <Table.Tr key={operation.id}>
-                  <Table.Td>
-                    <Text size="sm" fw={500}>{operation.name}</Text>
-                  </Table.Td>
-                  <Table.Td>
-                    <Badge
-                      variant="light"
-                      color="ferma"
-                      size="sm"
-                      style={{
-                        background: 'rgba(76, 175, 80, 0.08)',
-                        border: '1px solid rgba(76, 175, 80, 0.12)'
-                      }}
-                    >
-                      {t(`operationCategory.${operation.category}`)}
-                    </Badge>
-                  </Table.Td>
-                  <Table.Td>
-                    <Badge
-                      variant="light"
-                      size="sm"
-                      leftSection={
-                        operation.direction === 'income'
-                          ? <IconArrowUpRight size={12} />
-                          : <IconArrowDownRight size={12} />
-                      }
-                      style={{
-                        background: operation.direction === 'income'
-                          ? 'rgba(76, 175, 80, 0.1)'
-                          : 'rgba(239, 83, 80, 0.1)',
-                        border: `1px solid ${operation.direction === 'income'
-                          ? 'rgba(76, 175, 80, 0.2)'
-                          : 'rgba(239, 83, 80, 0.2)'}`,
-                        color: operation.direction === 'income' ? '#66bb6a' : '#ef5350'
-                      }}
-                    >
-                      {t(`financialDirection.${operation.direction}`)}
-                    </Badge>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text size="sm" c="dimmed">
-                      {new Date(operation.date).toLocaleDateString(locale)}
-                    </Text>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text
-                      size="sm"
-                      fw={600}
-                      c={operation.direction === 'income' ? '#66bb6a' : '#ef5350'}
-                    >
-                      {operation.direction === 'income' ? '+' : '-'}{formatCurrency(operation.amount ?? 0, locale)}
-                    </Text>
-                  </Table.Td>
-                  <Table.Td>
-                    <Text size="sm" c="dimmed">
-                      {operation.quantity ? `${operation.quantity} ${operation.unit ?? ''}`.trim() : '-'}
-                    </Text>
-                  </Table.Td>
+        <div className="table-shell">
+          <Table.ScrollContainer minWidth={840}>
+            <Table highlightOnHover>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>{t('operations.name')}</Table.Th>
+                  <Table.Th>{t('operations.category')}</Table.Th>
+                  <Table.Th>{t('operations.direction')}</Table.Th>
+                  <Table.Th>{t('operations.date')}</Table.Th>
+                  <Table.Th>{t('operations.amount')}</Table.Th>
+                  <Table.Th>{t('operations.quantity')}</Table.Th>
                 </Table.Tr>
-              ))
-            )}
-          </Table.Tbody>
-        </Table>
+              </Table.Thead>
+              <Table.Tbody>
+                {operations.length === 0 ? (
+                  <Table.Tr>
+                    <Table.Td colSpan={6}>
+                      <Stack align="center" py="xl" gap="sm">
+                        <ThemeIcon size={48} radius="xl" variant="light" color="gold">
+                          <IconTractor size={24} />
+                        </ThemeIcon>
+                        <Text c="dimmed" size="sm">{t('common.empty')}</Text>
+                      </Stack>
+                    </Table.Td>
+                  </Table.Tr>
+                ) : (
+                  operations.map((operation) => (
+                    <Table.Tr key={operation.id}>
+                      <Table.Td>
+                        <Text size="sm" fw={500}>{operation.name}</Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          variant="light"
+                          color="ferma"
+                          size="sm"
+                          style={{
+                            background: 'rgba(76, 175, 80, 0.08)',
+                            border: '1px solid rgba(76, 175, 80, 0.12)'
+                          }}
+                        >
+                          {t(`operationCategory.${operation.category}`)}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Badge
+                          variant="light"
+                          size="sm"
+                          leftSection={
+                            operation.direction === 'income'
+                              ? <IconArrowUpRight size={12} />
+                              : <IconArrowDownRight size={12} />
+                          }
+                          style={{
+                            background: operation.direction === 'income'
+                              ? 'rgba(76, 175, 80, 0.1)'
+                              : 'rgba(239, 83, 80, 0.1)',
+                            border: `1px solid ${operation.direction === 'income'
+                              ? 'rgba(76, 175, 80, 0.2)'
+                              : 'rgba(239, 83, 80, 0.2)'}`,
+                            color: operation.direction === 'income' ? '#66bb6a' : '#ef5350'
+                          }}
+                        >
+                          {t(`financialDirection.${operation.direction}`)}
+                        </Badge>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" c="dimmed">
+                          {new Date(operation.date).toLocaleDateString(locale)}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text
+                          size="sm"
+                          fw={700}
+                          className={operation.direction === 'income' ? 'metric-positive' : 'metric-negative'}
+                        >
+                          {operation.direction === 'income' ? '+' : '-'}{formatCurrency(operation.amount ?? 0, locale)}
+                        </Text>
+                      </Table.Td>
+                      <Table.Td>
+                        <Text size="sm" c="dimmed">
+                          {operation.quantity ? `${operation.quantity} ${operation.unit ?? ''}`.trim() : '-'}
+                        </Text>
+                      </Table.Td>
+                    </Table.Tr>
+                  ))
+                )}
+              </Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
+        </div>
       </Card>
 
       {/* Add Operation Modal */}

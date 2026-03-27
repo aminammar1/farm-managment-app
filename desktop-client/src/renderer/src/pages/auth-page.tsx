@@ -1,23 +1,14 @@
-import {
-  Button,
-  Image,
-  PasswordInput,
-  SegmentedControl,
-  Stack,
-  Text,
-  TextInput,
-  Title
-} from '@mantine/core';
+import { Button, Group, Image, PasswordInput, SegmentedControl, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { LanguageCode } from '../../../shared/contracts';
+import authIllustration from '../assets/auth-illustration.png';
+import fermaLogo from '../assets/ferma-logo.png';
 import { useAuth } from '../auth/auth-context';
 import { LanguageSwitcher } from '../components/language-switcher';
 import { getErrorMessage } from '../lib/errors';
-import authIllustration from '../assets/auth-illustration.png';
-import fermaLogo from '../assets/ferma-logo.png';
 
 type AuthMode = 'login' | 'register';
 
@@ -37,6 +28,10 @@ export const AuthPage = () => {
       locale: (i18n.resolvedLanguage ?? 'ar') as LanguageCode
     }
   });
+
+  useEffect(() => {
+    form.setFieldValue('locale', (i18n.resolvedLanguage ?? 'ar') as LanguageCode);
+  }, [i18n.resolvedLanguage]);
 
   const handleSubmit = form.onSubmit(async (values) => {
     setSubmitting(true);
@@ -59,63 +54,47 @@ export const AuthPage = () => {
 
   return (
     <div className="auth-shell">
-      {/* Left Panel - Form */}
       <div className="auth-left-panel">
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: 480 }}>
-          {/* Brand */}
-          <div className="auth-brand-badge">
-            <Image src={fermaLogo} w={24} h={24} radius="sm" />
-            <span>Ferma-TN</span>
-          </div>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: 520, width: '100%' }}>
+          <Group justify="space-between" align="center" mb="xl">
+            <div className="auth-brand-badge">
+              <Image src={fermaLogo} w={24} h={24} radius="sm" />
+              <span>Ferma-TN</span>
+            </div>
+            <LanguageSwitcher />
+          </Group>
 
-          {/* Title */}
-          <Title
-            order={1}
-            style={{
-              fontSize: '2.4rem',
-              lineHeight: 1.2,
-              background: 'linear-gradient(135deg, #e8f5e9 30%, #66bb6a 70%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}
-          >
+          <Title order={1} className="auth-title">
             {t('auth.title')}
           </Title>
 
-          <Text
-            mt="md"
-            style={{
-              color: 'rgba(200, 230, 201, 0.6)',
-              fontSize: '1rem',
-              lineHeight: 1.6,
-              maxWidth: 440
-            }}
-          >
+          <Text mt="md" className="auth-subtitle">
             {t('auth.subtitle')}
           </Text>
 
-          {/* Language Switcher */}
-          <div style={{ marginTop: 24 }}>
-            <LanguageSwitcher />
-          </div>
-
-          {/* Form Card */}
-          <div className="auth-form-card">
+          <div className="auth-form-card auth-form-card-clean">
             <form onSubmit={handleSubmit}>
-              <Stack gap="md">
+              <Stack gap="lg">
                 <SegmentedControl
+                  className="auth-tabs"
                   value={mode}
                   onChange={(value) => setMode(value as AuthMode)}
+                  fullWidth
+                  radius="xl"
                   data={[
                     { label: t('auth.login'), value: 'login' },
                     { label: t('auth.register'), value: 'register' }
                   ]}
-                  fullWidth
-                  radius="xl"
                 />
 
+                <div className="auth-panel-header">
+                  <Text fw={700} size="lg" className="section-heading">
+                    {mode === 'login' ? t('auth.login') : t('auth.register')}
+                  </Text>
+                </div>
+
                 {mode === 'register' ? (
-                  <>
+                  <Stack gap="md">
                     <TextInput
                       label={t('auth.name')}
                       placeholder="Ahmed Ben Salah"
@@ -135,7 +114,7 @@ export const AuthPage = () => {
                       {...form.getInputProps('farmName')}
                       radius="lg"
                     />
-                  </>
+                  </Stack>
                 ) : null}
 
                 <TextInput
@@ -147,7 +126,7 @@ export const AuthPage = () => {
                 />
                 <PasswordInput
                   label={t('auth.password')}
-                  placeholder="••••••••"
+                  placeholder="********"
                   {...form.getInputProps('password')}
                   required
                   radius="lg"
@@ -160,7 +139,6 @@ export const AuthPage = () => {
                   loading={submitting}
                   radius="xl"
                   fullWidth
-                  mt="sm"
                   style={{
                     boxShadow: '0 8px 32px rgba(76, 175, 80, 0.25)',
                     fontWeight: 700,
@@ -173,14 +151,12 @@ export const AuthPage = () => {
             </form>
           </div>
 
-          {/* Footer */}
-          <Text mt="xl" size="xs" style={{ color: 'rgba(165, 214, 167, 0.3)' }}>
-            © 2026 Ferma-TN — {t('app.subtitle')}
+          <Text mt="xl" size="xs" className="auth-footer-text">
+            © 2026 Ferma-TN - {t('app.subtitle')}
           </Text>
         </div>
       </div>
 
-      {/* Right Panel - Illustration */}
       <div className="auth-right-panel">
         <img src={authIllustration} alt="Tunisian farm landscape" />
       </div>

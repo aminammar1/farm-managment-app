@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import type { AuthResponse, AuthUser, LanguageCode } from '../../../shared/contracts';
+import { i18n } from '../i18n';
 import { apiFetch } from '../lib/api';
 import { clearAuthToken, getAuthToken, setAuthToken } from '../lib/storage';
 
@@ -23,6 +25,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isReady, setIsReady] = useState(false);
 
@@ -36,6 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     void apiFetch<AuthUser>('/api/auth/me')
       .then((nextUser) => {
         setUser(nextUser);
+        void i18n.changeLanguage(nextUser.locale);
       })
       .catch(() => {
         clearAuthToken();
@@ -48,7 +52,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const applyAuthResponse = (response: AuthResponse) => {
     setAuthToken(response.token);
+    queryClient.clear();
     setUser(response.user);
+    void i18n.changeLanguage(response.user.locale);
   };
 
   const value = useMemo<AuthContextValue>(
@@ -73,10 +79,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       },
       logout: () => {
         clearAuthToken();
+        queryClient.clear();
         setUser(null);
       }
     }),
-    [isReady, user]
+    [isReady, queryClient, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

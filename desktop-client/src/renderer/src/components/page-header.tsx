@@ -18,27 +18,16 @@ export const PageHeader = ({ title, subtitle, action, badge }: PageHeaderProps) 
           variant="light"
           size="lg"
           leftSection={<IconLeaf size={12} />}
-          style={{
-            background: 'rgba(76, 175, 80, 0.1)',
-            border: '1px solid rgba(76, 175, 80, 0.2)'
-          }}
+          className="title-badge"
         >
           {badge}
         </Badge>
       ) : null}
-      <Title
-        order={2}
-        style={{
-          background: 'linear-gradient(135deg, #e8f5e9 20%, #a5d6a7 80%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          fontSize: '1.75rem'
-        }}
-      >
+      <Title order={2} className="page-title-gradient" style={{ fontSize: '1.75rem', lineHeight: 1.1 }}>
         {title}
       </Title>
       {subtitle ? (
-        <Text c="dimmed" maw={720} size="sm" style={{ opacity: 0.7 }}>
+        <Text c="dimmed" maw={720} size="sm" className="soft-text" lineClamp={2} style={{ opacity: 0.88 }}>
           {subtitle}
         </Text>
       ) : null}

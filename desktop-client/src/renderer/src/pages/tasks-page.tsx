@@ -40,9 +40,9 @@ import { getErrorMessage } from '../lib/errors';
 import type { ReactNode } from 'react';
 
 const priorityConfig: Record<string, { bg: string; border: string; text: string; dot: string }> = {
-  high: { bg: 'rgba(239, 83, 80, 0.1)', border: 'rgba(239, 83, 80, 0.25)', text: '#ef5350', dot: '#ef5350' },
-  medium: { bg: 'rgba(255, 193, 7, 0.1)', border: 'rgba(255, 193, 7, 0.25)', text: '#ffd54f', dot: '#ffc107' },
-  low: { bg: 'rgba(33, 150, 243, 0.1)', border: 'rgba(33, 150, 243, 0.25)', text: '#64b5f6', dot: '#2196f3' }
+  high: { bg: 'rgba(212, 91, 67, 0.12)', border: 'rgba(212, 91, 67, 0.26)', text: '#d45b43', dot: '#d45b43' },
+  medium: { bg: 'rgba(201, 144, 47, 0.12)', border: 'rgba(201, 144, 47, 0.28)', text: '#c9902f', dot: '#c9902f' },
+  low: { bg: 'rgba(79, 139, 76, 0.12)', border: 'rgba(79, 139, 76, 0.24)', text: '#4f8b4c', dot: '#4f8b4c' }
 };
 
 const categoryIcons: Record<string, ReactNode> = {
@@ -179,119 +179,123 @@ export const TasksPage = () => {
             >
               <IconChecklist size={18} color="#aed581" />
             </Box>
-            <Text fw={700} c="#e8f5e9">{t('tasks.title')}</Text>
+            <Text fw={700} className="section-heading">{t('tasks.title')}</Text>
           </Group>
           <Badge variant="light" color="ferma" size="sm">{tasks.length}</Badge>
         </Group>
 
-        <Table highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>{t('tasks.task')}</Table.Th>
-              <Table.Th>{t('tasks.category')}</Table.Th>
-              <Table.Th>{t('tasks.priority')}</Table.Th>
-              <Table.Th>{t('tasks.status')}</Table.Th>
-              <Table.Th>{t('tasks.dueDate')}</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {tasks.length === 0 ? (
-              <Table.Tr>
-                <Table.Td colSpan={5}>
-                  <Stack align="center" py="xl" gap="sm">
-                    <ThemeIcon size={48} radius="xl" variant="light" color="ferma">
-                      <IconChecklist size={24} />
-                    </ThemeIcon>
-                    <Text c="dimmed" size="sm">{t('common.empty')}</Text>
-                  </Stack>
-                </Table.Td>
-              </Table.Tr>
-            ) : (
-              tasks.map((task) => {
-                const pc = priorityConfig[task.priority] ?? priorityConfig.medium;
-                return (
-                  <Table.Tr key={task.id}>
-                    <Table.Td>
-                      <Group gap="xs">
-                        <Box
-                          style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            background: pc.dot,
-                            flexShrink: 0
-                          }}
-                        />
-                        <Text size="sm" fw={500}>{task.title}</Text>
-                      </Group>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        variant="light"
-                        color="ferma"
-                        size="sm"
-                        leftSection={categoryIcons[task.category] ?? <IconChecklist size={14} />}
-                        style={{
-                          background: 'rgba(76, 175, 80, 0.08)',
-                          border: '1px solid rgba(76, 175, 80, 0.12)'
-                        }}
-                      >
-                        {t(`taskCategory.${task.category}`)}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        variant="light"
-                        size="sm"
-                        style={{
-                          background: pc.bg,
-                          border: `1px solid ${pc.border}`,
-                          color: pc.text
-                        }}
-                      >
-                        {t(`taskPriority.${task.priority}`)}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Select
-                        value={task.status}
-                        data={['pending', 'inProgress', 'done'].map((value) => ({
-                          value,
-                          label: t(`taskStatus.${value}`)
-                        }))}
-                        onChange={(value) => {
-                          if (value) {
-                            statusMutation.mutate({ id: task.id, status: value as TaskRecord['status'] });
-                          }
-                        }}
-                        allowDeselect={false}
-                        size="xs"
-                        radius="lg"
-                        styles={{
-                          input: {
-                            background: 'rgba(10, 30, 18, 0.6)',
-                            borderColor: 'rgba(76, 175, 80, 0.15)',
-                            color: '#e8f5e9',
-                            fontSize: '0.8rem'
-                          }
-                        }}
-                      />
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm" c="dimmed">
-                        {task.dueDate ? new Date(task.dueDate).toLocaleDateString(locale) : '-'}
-                      </Text>
+        <div className="table-shell">
+          <Table.ScrollContainer minWidth={760}>
+            <Table highlightOnHover>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>{t('tasks.task')}</Table.Th>
+                  <Table.Th>{t('tasks.category')}</Table.Th>
+                  <Table.Th>{t('tasks.priority')}</Table.Th>
+                  <Table.Th>{t('tasks.status')}</Table.Th>
+                  <Table.Th>{t('tasks.dueDate')}</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {tasks.length === 0 ? (
+                  <Table.Tr>
+                    <Table.Td colSpan={5}>
+                      <Stack align="center" py="xl" gap="sm">
+                        <ThemeIcon size={48} radius="xl" variant="light" color="ferma">
+                          <IconChecklist size={24} />
+                        </ThemeIcon>
+                        <Text c="dimmed" size="sm">{t('common.empty')}</Text>
+                      </Stack>
                     </Table.Td>
                   </Table.Tr>
-                );
-              })
-            )}
-          </Table.Tbody>
-        </Table>
+                ) : (
+                  tasks.map((task) => {
+                    const pc = priorityConfig[task.priority] ?? priorityConfig.medium;
+                    return (
+                      <Table.Tr key={task.id}>
+                        <Table.Td>
+                          <Group gap="xs">
+                            <Box
+                              style={{
+                                width: 8,
+                                height: 8,
+                                borderRadius: '50%',
+                                background: pc.dot,
+                                flexShrink: 0
+                              }}
+                            />
+                            <Text size="sm" fw={500}>{task.title}</Text>
+                          </Group>
+                        </Table.Td>
+                        <Table.Td>
+                          <Badge
+                            variant="light"
+                            color="ferma"
+                            size="sm"
+                            leftSection={categoryIcons[task.category] ?? <IconChecklist size={14} />}
+                            style={{
+                              background: 'rgba(76, 175, 80, 0.08)',
+                              border: '1px solid rgba(76, 175, 80, 0.12)'
+                            }}
+                          >
+                            {t(`taskCategory.${task.category}`)}
+                          </Badge>
+                        </Table.Td>
+                        <Table.Td>
+                          <Badge
+                            variant="light"
+                            size="sm"
+                            style={{
+                              background: pc.bg,
+                              border: `1px solid ${pc.border}`,
+                              color: pc.text
+                            }}
+                          >
+                            {t(`taskPriority.${task.priority}`)}
+                          </Badge>
+                        </Table.Td>
+                        <Table.Td>
+                          <Select
+                            value={task.status}
+                            data={['pending', 'inProgress', 'done'].map((value) => ({
+                              value,
+                              label: t(`taskStatus.${value}`)
+                            }))}
+                            onChange={(value) => {
+                              if (value) {
+                                statusMutation.mutate({ id: task.id, status: value as TaskRecord['status'] });
+                              }
+                            }}
+                            allowDeselect={false}
+                            size="xs"
+                            radius="lg"
+                            styles={{
+                              input: {
+                                background: 'var(--app-bg-panel-strong)',
+                                borderColor: 'var(--app-border)',
+                                color: 'var(--app-text-primary)',
+                                fontSize: '0.8rem'
+                              }
+                            }}
+                          />
+                        </Table.Td>
+                        <Table.Td>
+                          <Text size="sm" c="dimmed">
+                            {task.dueDate ? new Date(task.dueDate).toLocaleDateString(locale) : '-'}
+                          </Text>
+                        </Table.Td>
+                      </Table.Tr>
+                    );
+                  })
+                )}
+              </Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
+        </div>
       </Card>
 
       {/* Add Task Modal */}
-      <Modal opened={opened} onClose={close} title={t('tasks.add')} centered radius="xl" size="lg">
+      <Modal opened={opened} onClose={close} title={t('tasks.add')} centered radius="xl" size="lg" classNames={{ content: 'task-editor-modal' }}>
         <form onSubmit={form.onSubmit((values) => createMutation.mutate(values))}>
           <Stack>
             <TextInput label={t('tasks.task')} required {...form.getInputProps('title')} radius="lg" />
@@ -304,6 +308,7 @@ export const TasksPage = () => {
                 }))}
                 {...form.getInputProps('category')}
                 radius="lg"
+                classNames={{ input: 'task-form-input', dropdown: 'task-form-dropdown', option: 'task-form-option' }}
               />
               <Select
                 label={t('tasks.priority')}
@@ -313,12 +318,13 @@ export const TasksPage = () => {
                 }))}
                 {...form.getInputProps('priority')}
                 radius="lg"
+                classNames={{ input: 'task-form-input', dropdown: 'task-form-dropdown', option: 'task-form-option' }}
               />
             </SimpleGrid>
-            <TextInput label={t('tasks.dueDate')} type="date" {...form.getInputProps('dueDate')} radius="lg" />
-            <Textarea label={t('tasks.notes')} minRows={3} {...form.getInputProps('notes')} radius="lg" />
+            <TextInput label={t('tasks.dueDate')} type="date" {...form.getInputProps('dueDate')} radius="lg" classNames={{ input: 'task-form-input' }} />
+            <Textarea label={t('tasks.notes')} minRows={3} {...form.getInputProps('notes')} radius="lg" classNames={{ input: 'task-form-input' }} />
             <Group justify="flex-end" mt="sm">
-              <Button variant="subtle" color="gray" onClick={close} radius="xl">
+              <Button variant="default" onClick={close} radius="xl" className="form-secondary-btn">
                 Cancel
               </Button>
               <Button

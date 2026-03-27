@@ -13,25 +13,23 @@ interface StatCardProps {
 export const StatCard = ({ label, value, icon, color, hint }: StatCardProps) => (
   <Tooltip label={hint} disabled={!hint} position="bottom" withArrow>
     <Card className="stat-card" data-color={color} padding="lg" radius="xl" withBorder>
-      <Group justify="space-between" align="flex-start">
-        <div>
-          <Text size="xs" c="dimmed" fw={500} tt="uppercase" style={{ letterSpacing: '0.06em' }}>
+      <Group justify="space-between" align="flex-start" wrap="nowrap" style={{ height: '100%' }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Text
+            size="xs"
+            c="dimmed"
+            fw={500}
+            tt="uppercase"
+            lineClamp={2}
+            style={{ letterSpacing: '0.06em', color: 'var(--app-text-muted)' }}
+          >
             {label}
           </Text>
-          <Text
-            fw={800}
-            size="1.85rem"
-            mt={8}
-            style={{
-              background: 'linear-gradient(135deg, #e8f5e9, #a5d6a7)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}
-          >
+          <Text fw={800} size="1.85rem" mt={8} className="page-title-gradient">
             {value}
           </Text>
           {hint ? (
-            <Text size="xs" c="dimmed" mt={6} style={{ opacity: 0.65 }}>
+            <Text size="xs" c="dimmed" mt={6} className="soft-text" lineClamp={2} style={{ opacity: 0.78 }}>
               {hint}
             </Text>
           ) : null}

@@ -1,7 +1,7 @@
 export const en = {
   app: {
     title: 'Ferma-TN',
-    subtitle: 'Modern Tunisian farm management for herd, crops, costs, and revenue'
+    subtitle: 'Farm control for Tunisian growers'
   },
   common: {
     save: 'Save',
@@ -20,28 +20,28 @@ export const en = {
     settings: 'Settings'
   },
   auth: {
-    title: 'Welcome to Ferma-TN',
-    subtitle: 'A secure desktop workspace built for Tunisian farmers and farm offices',
-    login: 'Login',
-    register: 'Create account',
+    title: 'Farm access',
+    subtitle: 'Desktop workspace for Tunisian farms',
+    login: 'Log in',
+    register: 'Sign up',
     name: 'Full name',
     email: 'Email address',
     password: 'Password',
     phone: 'Phone number',
     farmName: 'Farm name',
     locale: 'Default language',
-    submitLogin: 'Open Ferma-TN',
-    submitRegister: 'Create farm account'
+    submitLogin: 'Log in',
+    submitRegister: 'Sign up'
   },
   dashboard: {
     title: 'Farm cockpit',
-    hero: 'A complete green-and-white command center for Tunisian mixed farming',
-    heroTitle: 'Track animals, tasks, costs, and revenue from one modern Ferma-TN dashboard.',
+    hero: 'Green-and-white control center for Tunisian farming',
+    heroTitle: 'Animals, tasks, costs, and sales in one dashboard.',
     heroDescription:
-      'Built for cattle, sheep, goats, poultry, camels, rabbits, horses, and beekeeping operations with fast daily planning and financial visibility.',
-    heroPointRevenue: 'See monthly revenue, expenses, and net result at a glance.',
-    heroPointLivestock: 'Follow herd composition and animals that need attention.',
-    heroPointPlanning: 'Keep feed, veterinary, irrigation, labor, and sales workflows aligned.',
+      'Built for livestock, crops, and fast daily decisions.',
+    heroPointRevenue: 'See revenue, costs, and net result fast.',
+    heroPointLivestock: 'Track the herd and priority animals.',
+    heroPointPlanning: 'Keep feed, health, irrigation, labor, and sales aligned.',
     livestockCount: 'Animals tracked',
     pendingTasks: 'Open tasks',
     completedTasks: 'Completed tasks',
@@ -55,7 +55,62 @@ export const en = {
     herdBalance: 'Herd distribution',
     financeTrend: 'Revenue vs expenses',
     operationsByCategory: 'Activity by category',
-    taskStatusSummary: 'Task status flow'
+    taskStatusSummary: 'Task status flow',
+    mapBadge: 'Interactive map',
+    mapTitle: '3D farm map',
+    mapSubtitle:
+      'Scan irrigation, health, and harvest zones at a glance.',
+    mapFocus: 'Map mode',
+    mapModes: {
+      irrigation: 'Irrigation',
+      health: 'Health',
+      harvest: 'Harvest'
+    },
+    mapStatus: {
+      good: 'On track',
+      attention: 'Watch',
+      urgent: 'Urgent'
+    },
+    mapSummary: {
+      water: 'Water',
+      health: 'Checks',
+      ready: 'Ready',
+      zones: 'Zones'
+    },
+    mapZones: {
+      olive: 'Olive grove',
+      greenhouse: 'Greenhouse',
+      livestock: 'Livestock yard',
+      water: 'Water basin',
+      packhouse: 'Packing point'
+    },
+    mapRecommendations: {
+      olive: {
+        irrigation: 'Olive grove is at {{metric}}. Keep the west line open.',
+        health: 'Olive grove shows {{metric}}. Inspect the lower leaves.',
+        harvest: 'Olive grove target is {{metric}}. Prepare crates early.'
+      },
+      greenhouse: {
+        irrigation: 'Greenhouse is at {{metric}}. Vent at noon, then pulse irrigation.',
+        health: 'Greenhouse is {{metric}}. Keep airflow open and check traps.',
+        harvest: 'Greenhouse is {{metric}}. Plan a short evening pick.'
+      },
+      livestock: {
+        irrigation: 'Livestock yard is at {{metric}}. Refill before evening feed.',
+        health: 'Livestock yard shows {{metric}}. Prioritize checks first.',
+        harvest: 'Livestock yard is in {{metric}}. Keep the milk route aligned.'
+      },
+      water: {
+        irrigation: 'Water basin is at {{metric}}. Schedule the next pump check.',
+        health: 'Water basin is {{metric}}. Keep filtration checks active.',
+        harvest: 'Water basin is {{metric}}. No harvest block today.'
+      },
+      packhouse: {
+        irrigation: 'Packing point supports {{metric}}. Keep loading access clear.',
+        health: 'Packing point needs {{metric}}. Verify cooling and cleaning.',
+        harvest: 'Packing point has {{metric}} lined up. Stage labor early.'
+      }
+    }
   },
   livestock: {
     title: 'Livestock registry',
@@ -84,6 +139,7 @@ export const en = {
     name: 'Operation',
     category: 'Category',
     direction: 'Direction',
+    directionExpense: 'Expense flow',
     date: 'Date',
     amount: 'Amount',
     quantity: 'Quantity',
@@ -93,7 +149,21 @@ export const en = {
   },
   settings: {
     title: 'Preferences',
-    languageHelp: 'Choose Arabic, French, or English. Arabic automatically switches the layout to RTL.'
+    languageHelp: 'Choose Arabic, French, or English. Arabic switches to RTL.',
+    profileSection: 'Farm profile',
+    appearanceSection: 'Appearance',
+    appearanceHelp: 'Switch between white mode and green night mode.',
+    themeLight: 'White mode',
+    themeDark: 'Green night',
+    themeSelection: 'Color scheme',
+    themeCurrent: 'Preview on',
+    notifications: 'Notifications',
+    aboutSection: 'About Ferma-TN',
+    version: 'Version',
+    platform: 'Platform',
+    platformValue: 'Desktop (Electron)',
+    license: 'License',
+    licenseValue: 'PRO'
   },
   language: {
     ar: 'Arabic',

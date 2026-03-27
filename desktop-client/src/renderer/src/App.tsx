@@ -22,6 +22,7 @@ import { SettingsPage } from './pages/settings-page';
 import { TasksPage } from './pages/tasks-page';
 import { getDirection } from './i18n';
 import { appTheme } from './theme';
+import { ThemeContextProvider, useThemeContext } from './theme-context';
 
 const queryClient = new QueryClient();
 
@@ -60,19 +61,26 @@ const ProtectedRoutes = () => {
   );
 };
 
-export const App = () => {
+const AppRoot = () => {
   const theme = useMemo(() => appTheme, []);
+  const { colorScheme } = useThemeContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <MantineProvider theme={theme}>
-        <Notifications position="top-right" />
-        <AuthProvider>
-          <HashRouter>
-            <ProtectedRoutes />
-          </HashRouter>
-        </AuthProvider>
-      </MantineProvider>
-    </QueryClientProvider>
+    <MantineProvider theme={theme} forceColorScheme={colorScheme}>
+      <Notifications position="top-right" />
+      <AuthProvider>
+        <HashRouter>
+          <ProtectedRoutes />
+        </HashRouter>
+      </AuthProvider>
+    </MantineProvider>
   );
 };
+
+export const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <ThemeContextProvider>
+      <AppRoot />
+    </ThemeContextProvider>
+  </QueryClientProvider>
+);

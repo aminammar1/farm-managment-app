@@ -1,47 +1,77 @@
-import { ActionIcon, Group, Text, Tooltip } from '@mantine/core';
-import { IconLanguage } from '@tabler/icons-react';
+import { Badge, Group, Menu, Stack, Text, UnstyledButton } from '@mantine/core';
+import { IconCheck, IconChevronDown, IconLanguage } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import type { LanguageCode } from '../../../shared/contracts';
 
-const langLabels: Record<LanguageCode, string> = {
-  ar: 'ع',
-  fr: 'Fr',
-  en: 'En'
+interface LanguageSwitcherProps {
+  compact?: boolean;
+}
+
+const languageMeta: Record<LanguageCode, { short: string; native: string }> = {
+  ar: { short: 'AR', native: 'العربية' },
+  fr: { short: 'FR', native: 'Francais' },
+  en: { short: 'EN', native: 'English' }
 };
 
-export const LanguageSwitcher = () => {
+export const LanguageSwitcher = ({ compact = false }: LanguageSwitcherProps) => {
   const { i18n, t } = useTranslation();
-
   const languages: LanguageCode[] = ['ar', 'fr', 'en'];
+  const currentLanguage = (i18n.resolvedLanguage ?? 'ar') as LanguageCode;
+  const current = languageMeta[currentLanguage];
 
   return (
-    <Group gap={6}>
-      {languages.map((language) => {
-        const isActive = i18n.resolvedLanguage === language;
-        return (
-          <Tooltip key={language} label={t(`language.${language}`)} withArrow>
-            <ActionIcon
-              variant={isActive ? 'filled' : 'subtle'}
-              color={isActive ? 'ferma' : 'gray'}
-              size="lg"
-              radius="xl"
+    <Menu width={compact ? 220 : 260} position="bottom-end" withinPortal shadow="lg" offset={10}>
+      <Menu.Target>
+        <UnstyledButton className={compact ? 'language-switcher-button compact' : 'language-switcher-button'}>
+          <Group gap={compact ? 8 : 10} wrap="nowrap">
+            <span className="language-switcher-icon">
+              <IconLanguage size={16} />
+            </span>
+            <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
+              <Text size="xs" className="language-switcher-label">
+                {t('common.language')}
+              </Text>
+              <Text fw={700} size="sm" truncate>
+                {compact ? current.short : current.native}
+              </Text>
+            </Stack>
+            <IconChevronDown size={16} className="language-switcher-chevron" />
+          </Group>
+        </UnstyledButton>
+      </Menu.Target>
+
+      <Menu.Dropdown className="language-switcher-dropdown">
+        <Menu.Label>{t('common.language')}</Menu.Label>
+        {languages.map((language) => {
+          const isActive = currentLanguage === language;
+          return (
+            <Menu.Item
+              key={language}
               onClick={() => {
                 void i18n.changeLanguage(language);
               }}
-              style={{
-                border: isActive ? '1px solid rgba(76, 175, 80, 0.3)' : '1px solid transparent',
-                boxShadow: isActive ? '0 0 16px rgba(76, 175, 80, 0.2)' : 'none',
-                transition: 'all 0.25s ease',
-                fontFamily: language === 'ar' ? '"Cairo", sans-serif' : '"Inter", sans-serif',
-                fontWeight: 700,
-                fontSize: '0.8rem'
-              }}
+              leftSection={
+                <Badge
+                  variant={isActive ? 'filled' : 'light'}
+                  color={isActive ? 'ferma' : 'gray'}
+                  radius="sm"
+                  size="sm"
+                >
+                  {languageMeta[language].short}
+                </Badge>
+              }
+              rightSection={isActive ? <IconCheck size={16} /> : null}
             >
-              <Text size="xs" fw={700} lh={1}>{langLabels[language]}</Text>
-            </ActionIcon>
-          </Tooltip>
-        );
-      })}
-    </Group>
+              <Group justify="space-between" gap="xs" wrap="nowrap">
+                <Text fw={600}>{languageMeta[language].native}</Text>
+                <Text size="xs" c="dimmed">
+                  {t(`language.${language}`)}
+                </Text>
+              </Group>
+            </Menu.Item>
+          );
+        })}
+      </Menu.Dropdown>
+    </Menu>
   );
 };

@@ -9,6 +9,7 @@ import {
   Divider,
   Group,
   Image,
+  Indicator,
   NavLink,
   ScrollArea,
   Stack,
@@ -19,19 +20,20 @@ import { useDisclosure } from '@mantine/hooks';
 import {
   IconChecklist,
   IconChevronRight,
+  IconDroplet,
   IconHome2,
   IconLeaf,
   IconLogout,
   IconSettings,
-  IconTractor,
   IconSun,
-  IconDroplet
+  IconTractor
 } from '@tabler/icons-react';
-import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { LanguageSwitcher } from '../components/language-switcher';
-import { useAuth } from '../auth/auth-context';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import fermaLogo from '../assets/ferma-logo.png';
+import { useAuth } from '../auth/auth-context';
+import { LanguageSwitcher } from '../components/language-switcher';
+import { ThemeModeSwitcher } from '../components/theme-mode-switcher';
 
 export const AppShellLayout = () => {
   const [opened, { toggle }] = useDisclosure();
@@ -47,8 +49,7 @@ export const AppShellLayout = () => {
     { to: '/settings', label: t('navigation.settings'), icon: IconSettings, color: '#78909c' }
   ];
 
-  const currentDate = new Date();
-  const dateStr = currentDate.toLocaleDateString(undefined, {
+  const dateStr = new Date().toLocaleDateString(undefined, {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -57,37 +58,37 @@ export const AppShellLayout = () => {
 
   return (
     <AppShell
-      header={{ height: 68 }}
-      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-      padding="xl"
+      header={{ height: 76 }}
+      navbar={{ width: 320, breakpoint: 'md', collapsed: { mobile: !opened } }}
+      padding={{ base: 'md', md: 'lg', xl: 'xl' }}
       className="app-frame"
     >
       <AppShell.Header className="shell-header">
         <Group h="100%" px="lg" justify="space-between">
           <Group gap="md">
-            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" color="#66bb6a" />
+            <Burger opened={opened} onClick={toggle} hiddenFrom="md" size="sm" color="#66bb6a" />
             <Group gap="sm">
-              <Image src={fermaLogo} w={36} h={36} radius="md" />
+              <Image src={fermaLogo} w={40} h={40} radius="md" />
               <Stack gap={0}>
-                <Text fw={700} size="md" c="#e8f5e9">
+                <Text fw={800} size="md" c="var(--app-text-primary)">
                   Ferma-TN
                 </Text>
-                <Text size="xs" c="dimmed" style={{ opacity: 0.5 }}>
+                <Text size="xs" c="dimmed" className="shell-date-text">
                   {dateStr}
                 </Text>
               </Stack>
             </Group>
           </Group>
 
-          <Group gap="md">
-            <Group gap={6} style={{ opacity: 0.5 }}>
-              <IconSun size={14} color="#ffd54f" />
+          <Group gap="sm" wrap="nowrap">
+            <Group gap={10} className="shell-weather-pill" visibleFrom="sm">
+              <IconSun size={14} color="#f59e0b" />
               <Text size="xs" c="dimmed">28°C</Text>
-              <IconDroplet size={14} color="#64b5f6" />
+              <IconDroplet size={14} color="#3b82f6" />
               <Text size="xs" c="dimmed">42%</Text>
             </Group>
-            <Divider orientation="vertical" color="rgba(76,175,80,0.15)" />
-            <LanguageSwitcher />
+            <ThemeModeSwitcher compact />
+            <LanguageSwitcher compact />
           </Group>
         </Group>
       </AppShell.Header>
@@ -96,22 +97,24 @@ export const AppShellLayout = () => {
         <AppShell.Section>
           <Card className="user-profile-card" padding="md" radius="xl" mb="lg" withBorder>
             <Group gap="sm">
-              <Avatar
-                color="ferma"
-                radius="xl"
-                size="lg"
-                style={{
-                  border: '2px solid rgba(76, 175, 80, 0.3)',
-                  boxShadow: '0 0 20px rgba(76, 175, 80, 0.15)'
-                }}
-              >
-                {user?.name?.slice(0, 1).toUpperCase() ?? 'F'}
-              </Avatar>
+              <Indicator inline color="ferma" offset={7} size={10} withBorder>
+                <Avatar
+                  color="ferma"
+                  radius="xl"
+                  size="lg"
+                  style={{
+                    border: '2px solid rgba(76, 175, 80, 0.3)',
+                    boxShadow: '0 0 20px rgba(76, 175, 80, 0.15)'
+                  }}
+                >
+                  {user?.name?.slice(0, 1).toUpperCase() ?? 'F'}
+                </Avatar>
+              </Indicator>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <Text fw={700} size="sm" c="#e8f5e9" truncate>
+                <Text fw={700} size="sm" c="var(--app-text-primary)" truncate>
                   {user?.farmName ?? user?.name}
                 </Text>
-                <Text size="xs" c="dimmed" truncate style={{ opacity: 0.6 }}>
+                <Text size="xs" c="dimmed" truncate style={{ opacity: 0.72 }}>
                   {user?.email}
                 </Text>
               </div>
@@ -131,8 +134,14 @@ export const AppShellLayout = () => {
         </AppShell.Section>
 
         <AppShell.Section>
-          <Text size="xs" fw={600} c="dimmed" tt="uppercase" mb="sm" px="sm"
-            style={{ letterSpacing: '0.08em', opacity: 0.4 }}
+          <Text
+            size="xs"
+            fw={700}
+            c="dimmed"
+            tt="uppercase"
+            mb="sm"
+            px="sm"
+            style={{ letterSpacing: '0.08em', opacity: 0.55 }}
           >
             {t('navigation.dashboard')}
           </Text>
@@ -148,7 +157,7 @@ export const AppShellLayout = () => {
                   component={Link}
                   to={link.to}
                   label={
-                    <Text size="sm" fw={isActive ? 600 : 400}>
+                    <Text size="sm" fw={isActive ? 700 : 500}>
                       {link.label}
                     </Text>
                   }
@@ -161,13 +170,11 @@ export const AppShellLayout = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        background: isActive
-                          ? `rgba(76, 175, 80, 0.15)`
-                          : 'rgba(76, 175, 80, 0.05)',
+                        background: isActive ? 'rgba(76, 175, 80, 0.15)' : 'rgba(76, 175, 80, 0.05)',
                         transition: 'all 0.25s ease'
                       }}
                     >
-                      <link.icon size={18} color={isActive ? link.color : 'rgba(200,230,201,0.5)'} />
+                      <link.icon size={18} color={isActive ? link.color : 'var(--app-text-muted)'} />
                     </Box>
                   }
                   rightSection={isActive ? <IconChevronRight size={14} color="#66bb6a" /> : null}
@@ -197,7 +204,7 @@ export const AppShellLayout = () => {
               onClick={logout}
               style={{
                 borderRadius: 14,
-                color: 'rgba(239, 83, 80, 0.7)',
+                color: 'rgba(239, 83, 80, 0.8)',
                 transition: 'all 0.25s ease'
               }}
             >
@@ -208,7 +215,9 @@ export const AppShellLayout = () => {
       </AppShell.Navbar>
 
       <AppShell.Main>
-        <Outlet />
+        <div className="content-shell">
+          <Outlet />
+        </div>
       </AppShell.Main>
     </AppShell>
   );

@@ -137,11 +137,7 @@ export const LivestockPage = () => {
                 fw={800}
                 size="2rem"
                 mt={4}
-                style={{
-                  background: 'linear-gradient(135deg, #e8f5e9, #a5d6a7)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
+                className="page-title-gradient"
               >
                 {formatCompactNumber(livestock.length, locale)}
               </Text>
@@ -168,11 +164,7 @@ export const LivestockPage = () => {
                 fw={800}
                 size="2rem"
                 mt={4}
-                style={{
-                  background: 'linear-gradient(135deg, #fff8e1, #ffd54f)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
+                className="page-title-gradient"
               >
                 {formatCompactNumber(monitoringCount, locale)}
               </Text>
@@ -239,74 +231,78 @@ export const LivestockPage = () => {
             >
               <IconTag size={18} color="#66bb6a" />
             </Box>
-            <Text fw={700} c="#e8f5e9">{t('livestock.title')}</Text>
+            <Text fw={700} className="section-heading">{t('livestock.title')}</Text>
           </Group>
           <Badge variant="light" color="ferma" size="sm">{livestock.length}</Badge>
         </Group>
 
-        <Table highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>{t('livestock.tagId')}</Table.Th>
-              <Table.Th>{t('livestock.type')}</Table.Th>
-              <Table.Th>{t('livestock.breed')}</Table.Th>
-              <Table.Th>{t('livestock.status')}</Table.Th>
-              <Table.Th>{t('livestock.location')}</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {livestock.length === 0 ? (
-              <Table.Tr>
-                <Table.Td colSpan={5}>
-                  <Stack align="center" py="xl" gap="sm">
-                    <ThemeIcon size={48} radius="xl" variant="light" color="ferma">
-                      <IconLeaf size={24} />
-                    </ThemeIcon>
-                    <Text c="dimmed" size="sm">{t('common.empty')}</Text>
-                  </Stack>
-                </Table.Td>
-              </Table.Tr>
-            ) : (
-              livestock.map((item) => {
-                const sc = statusColors[item.status] ?? statusColors.healthy;
-                return (
-                  <Table.Tr key={item.id}>
-                    <Table.Td>
-                      <Text size="sm" fw={600}>{item.tagId}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Group gap="xs">
-                        <ThemeIcon size={22} radius="md" variant="light" color="ferma" style={{ border: 'none' }}>
-                          {animalIcons[item.type] ?? <IconPaw size={12} />}
+        <div className="table-shell">
+          <Table.ScrollContainer minWidth={720}>
+            <Table highlightOnHover>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>{t('livestock.tagId')}</Table.Th>
+                  <Table.Th>{t('livestock.type')}</Table.Th>
+                  <Table.Th>{t('livestock.breed')}</Table.Th>
+                  <Table.Th>{t('livestock.status')}</Table.Th>
+                  <Table.Th>{t('livestock.location')}</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                {livestock.length === 0 ? (
+                  <Table.Tr>
+                    <Table.Td colSpan={5}>
+                      <Stack align="center" py="xl" gap="sm">
+                        <ThemeIcon size={48} radius="xl" variant="light" color="ferma">
+                          <IconLeaf size={24} />
                         </ThemeIcon>
-                        <Text size="sm">{t(`livestockType.${item.type}`)}</Text>
-                      </Group>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm">{item.breed}</Text>
-                    </Table.Td>
-                    <Table.Td>
-                      <Badge
-                        variant="light"
-                        size="sm"
-                        style={{
-                          background: sc.bg,
-                          border: `1px solid ${sc.border}`,
-                          color: sc.text
-                        }}
-                      >
-                        {t(`livestockStatus.${item.status}`)}
-                      </Badge>
-                    </Table.Td>
-                    <Table.Td>
-                      <Text size="sm" c="dimmed">{item.location ?? '-'}</Text>
+                        <Text c="dimmed" size="sm">{t('common.empty')}</Text>
+                      </Stack>
                     </Table.Td>
                   </Table.Tr>
-                );
-              })
-            )}
-          </Table.Tbody>
-        </Table>
+                ) : (
+                  livestock.map((item) => {
+                    const sc = statusColors[item.status] ?? statusColors.healthy;
+                    return (
+                      <Table.Tr key={item.id}>
+                        <Table.Td>
+                          <Text size="sm" fw={600}>{item.tagId}</Text>
+                        </Table.Td>
+                        <Table.Td>
+                          <Group gap="xs">
+                            <ThemeIcon size={22} radius="md" variant="light" color="ferma" style={{ border: 'none' }}>
+                              {animalIcons[item.type] ?? <IconPaw size={12} />}
+                            </ThemeIcon>
+                            <Text size="sm">{t(`livestockType.${item.type}`)}</Text>
+                          </Group>
+                        </Table.Td>
+                        <Table.Td>
+                          <Text size="sm">{item.breed}</Text>
+                        </Table.Td>
+                        <Table.Td>
+                          <Badge
+                            variant="light"
+                            size="sm"
+                            style={{
+                              background: sc.bg,
+                              border: `1px solid ${sc.border}`,
+                              color: sc.text
+                            }}
+                          >
+                            {t(`livestockStatus.${item.status}`)}
+                          </Badge>
+                        </Table.Td>
+                        <Table.Td>
+                          <Text size="sm" c="dimmed">{item.location ?? '-'}</Text>
+                        </Table.Td>
+                      </Table.Tr>
+                    );
+                  })
+                )}
+              </Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
+        </div>
       </Card>
 
       {/* Add Modal */}

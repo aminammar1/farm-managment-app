@@ -1,29 +1,18 @@
-import {
-  Badge,
-  Box,
-  Card,
-  Divider,
-  Group,
-  SimpleGrid,
-  Stack,
-  Switch,
-  Text,
-  ThemeIcon
-} from '@mantine/core';
+import { Box, Card, Divider, Group, SimpleGrid, Stack, Switch, Text, ThemeIcon } from '@mantine/core';
 import {
   IconBell,
   IconDeviceDesktop,
   IconInfoCircle,
   IconLanguage,
-  IconMoon,
   IconPalette,
   IconShieldCheck,
   IconUser
 } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../auth/auth-context';
 import { LanguageSwitcher } from '../components/language-switcher';
 import { PageHeader } from '../components/page-header';
-import { useAuth } from '../auth/auth-context';
+import { ThemeModeSwitcher } from '../components/theme-mode-switcher';
 
 export const SettingsPage = () => {
   const { t } = useTranslation();
@@ -31,70 +20,46 @@ export const SettingsPage = () => {
 
   return (
     <Stack gap="xl">
-      <PageHeader title={t('settings.title')} badge="Ferma-TN" />
+      <PageHeader title={t('settings.title')} badge="Ferma-TN" subtitle={t('settings.appearanceHelp')} />
 
-      <SimpleGrid cols={{ base: 1, md: 2 }}>
-        {/* Profile Section */}
+      <SimpleGrid cols={{ base: 1, xl: 2 }} spacing="lg">
         <Card className="settings-section" padding="xl" radius="xl" withBorder>
           <Group gap="sm" mb="lg">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(76, 175, 80, 0.1)',
-                border: '1px solid rgba(76, 175, 80, 0.2)'
-              }}
-            >
+            <Box className="section-icon ferma">
               <IconUser size={18} color="#66bb6a" />
             </Box>
-            <Text fw={700} c="#e8f5e9">Profile</Text>
+            <Text fw={700} c="var(--app-text-primary)">{t('settings.profileSection')}</Text>
           </Group>
 
           <Stack gap="md">
             <Group justify="space-between">
-              <Text size="sm" c="dimmed">Name</Text>
-              <Text size="sm" fw={500} c="#e8f5e9">{user?.name ?? '-'}</Text>
+              <Text size="sm" c="dimmed">{t('auth.name')}</Text>
+              <Text size="sm" fw={500} c="var(--app-text-primary)">{user?.name ?? '-'}</Text>
             </Group>
             <Divider color="rgba(76, 175, 80, 0.08)" />
             <Group justify="space-between">
-              <Text size="sm" c="dimmed">Email</Text>
-              <Text size="sm" fw={500} c="#e8f5e9">{user?.email ?? '-'}</Text>
+              <Text size="sm" c="dimmed">{t('auth.email')}</Text>
+              <Text size="sm" fw={500} c="var(--app-text-primary)">{user?.email ?? '-'}</Text>
             </Group>
             <Divider color="rgba(76, 175, 80, 0.08)" />
             <Group justify="space-between">
-              <Text size="sm" c="dimmed">Farm</Text>
-              <Text size="sm" fw={500} c="#e8f5e9">{user?.farmName ?? '-'}</Text>
+              <Text size="sm" c="dimmed">{t('auth.farmName')}</Text>
+              <Text size="sm" fw={500} c="var(--app-text-primary)">{user?.farmName ?? '-'}</Text>
             </Group>
             <Divider color="rgba(76, 175, 80, 0.08)" />
             <Group justify="space-between">
-              <Text size="sm" c="dimmed">Phone</Text>
-              <Text size="sm" fw={500} c="#e8f5e9">{user?.phone ?? '-'}</Text>
+              <Text size="sm" c="dimmed">{t('auth.phone')}</Text>
+              <Text size="sm" fw={500} c="var(--app-text-primary)">{user?.phone ?? '-'}</Text>
             </Group>
           </Stack>
         </Card>
 
-        {/* Language Section */}
         <Card className="settings-section" padding="xl" radius="xl" withBorder>
           <Group gap="sm" mb="lg">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(255, 193, 7, 0.1)',
-                border: '1px solid rgba(255, 193, 7, 0.2)'
-              }}
-            >
-              <IconLanguage size={18} color="#ffd54f" />
+            <Box className="section-icon gold">
+              <IconLanguage size={18} color="#f59e0b" />
             </Box>
-            <Text fw={700} c="#e8f5e9">Language</Text>
+            <Text fw={700} c="var(--app-text-primary)">{t('common.language')}</Text>
           </Group>
 
           <Stack gap="md">
@@ -105,94 +70,64 @@ export const SettingsPage = () => {
           </Stack>
         </Card>
 
-        {/* Appearance Section */}
         <Card className="settings-section" padding="xl" radius="xl" withBorder>
           <Group gap="sm" mb="lg">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(0, 150, 136, 0.1)',
-                border: '1px solid rgba(0, 150, 136, 0.2)'
-              }}
-            >
-              <IconPalette size={18} color="#4db6ac" />
+            <Box className="section-icon teal">
+              <IconPalette size={18} color="#0f766e" />
             </Box>
-            <Text fw={700} c="#e8f5e9">Appearance</Text>
+            <Text fw={700} c="var(--app-text-primary)">{t('settings.appearanceSection')}</Text>
           </Group>
 
           <Stack gap="md">
+            <Text size="sm" c="dimmed" style={{ lineHeight: 1.6 }}>
+              {t('settings.appearanceHelp')}
+            </Text>
+            <ThemeModeSwitcher />
+            <Divider color="rgba(76, 175, 80, 0.08)" />
             <Group justify="space-between">
-              <Group gap="sm">
-                <IconMoon size={16} color="#90a4ae" />
-                <Text size="sm" c="dimmed">Dark mode</Text>
-              </Group>
-              <Switch defaultChecked color="ferma" />
+              <Text size="sm" c="dimmed">{t('settings.themeSelection')}</Text>
+              <Text size="sm" fw={600} c="var(--app-text-primary)">
+                {t('settings.themeCurrent')}
+              </Text>
             </Group>
             <Divider color="rgba(76, 175, 80, 0.08)" />
             <Group justify="space-between">
               <Group gap="sm">
                 <IconBell size={16} color="#90a4ae" />
-                <Text size="sm" c="dimmed">Notifications</Text>
+                <Text size="sm" c="dimmed">{t('settings.notifications')}</Text>
               </Group>
               <Switch defaultChecked color="ferma" />
             </Group>
           </Stack>
         </Card>
 
-        {/* About Section */}
         <Card className="settings-section" padding="xl" radius="xl" withBorder>
           <Group gap="sm" mb="lg">
-            <Box
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(33, 150, 243, 0.1)',
-                border: '1px solid rgba(33, 150, 243, 0.2)'
-              }}
-            >
-              <IconInfoCircle size={18} color="#64b5f6" />
+            <Box className="section-icon sky">
+              <IconInfoCircle size={18} color="#2563eb" />
             </Box>
-            <Text fw={700} c="#e8f5e9">About Ferma-TN</Text>
+            <Text fw={700} c="var(--app-text-primary)">{t('settings.aboutSection')}</Text>
           </Group>
 
           <Stack gap="md">
             <Group justify="space-between">
-              <Text size="sm" c="dimmed">Version</Text>
-              <Badge
-                variant="light"
-                color="ferma"
-                size="sm"
-                style={{
-                  background: 'rgba(76, 175, 80, 0.1)',
-                  border: '1px solid rgba(76, 175, 80, 0.15)'
-                }}
-              >
-                v0.1.0
-              </Badge>
+              <Text size="sm" c="dimmed">{t('settings.version')}</Text>
+              <Text size="sm" fw={600} c="var(--app-text-primary)">v0.1.0</Text>
             </Group>
             <Divider color="rgba(76, 175, 80, 0.08)" />
             <Group justify="space-between">
-              <Text size="sm" c="dimmed">Platform</Text>
+              <Text size="sm" c="dimmed">{t('settings.platform')}</Text>
               <Group gap={6}>
                 <IconDeviceDesktop size={14} color="#90a4ae" />
-                <Text size="sm" c="#e8f5e9">Desktop (Electron)</Text>
+                <Text size="sm" c="var(--app-text-primary)">{t('settings.platformValue')}</Text>
               </Group>
             </Group>
             <Divider color="rgba(76, 175, 80, 0.08)" />
             <Group justify="space-between">
-              <Text size="sm" c="dimmed">License</Text>
+              <Text size="sm" c="dimmed">{t('settings.license')}</Text>
               <Group gap={6}>
                 <IconShieldCheck size={14} color="#66bb6a" />
-                <Text size="sm" c="#e8f5e9">PRO</Text>
+                <Text size="sm" c="var(--app-text-primary)">{t('settings.licenseValue')}</Text>
               </Group>
             </Group>
           </Stack>
